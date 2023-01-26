@@ -1,9 +1,9 @@
 {
-  "name": "johnshopkins/sentry-transactions",
-  "homepage": "https://github.com/johnshopkins/sentry-transactions",
+  "name": "johnshopkins/sentry-tracing",
+  "homepage": "https://github.com/johnshopkins/sentry-tracing",
   "autoload": {
     "psr-4": {
-      "SentryTransactions\\": "src/"
+      "SentryTracing\\": "src/"
     }
   },
   "authors": [
