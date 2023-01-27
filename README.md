@@ -11,28 +11,21 @@ composer require johnshopkins/sentry-tracing
 ## Basic usage
 
 ```php
-
-use SentryTracing\Span;
-use SentryTracing\Transaction;
+<?php
 
 require __DIR__ . '/vendor/autoload.php';
 
-// creates and starts a transaction
-$transaction = new Transaction('transaction name', 'http.server');
+// create and start a transaction
+$transaction = new SentryTracing\Transaction('transaction name', 'operation.name');
 
 // record a span
-$span = new Span('db.sql.execute');
-
-// run a database query
-
-// end and record the span
+$span = new SentryTracing\Span('operation.name');
+// do some stuff...
 $span->end();
 
 // record another span
-$span = new Span('template.render');
-
-// render the template
-
+$span = new SentryTracing\Span('operation.name');
+// do some more stuff...
 $span->end();
 
 
@@ -42,7 +35,7 @@ $transaction->end();
 
 ## Connecting services
 
-For traces that begin in the backend, connect the front end `pageload` transaction using `meta` tags.
+For traces that begin in the backend, connect the front end `pageload` transaction using [meta tags](https://docs.sentry.io/platforms/javascript/performance/connect-services/#pageload).
 
 ```html
 <html>
