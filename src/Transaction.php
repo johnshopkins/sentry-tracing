@@ -30,4 +30,14 @@ class Transaction
   {
     $this->transaction->finish();
   }
+
+  /**
+   * Gets the URI of the current request
+   * @return string
+   */
+  public static function getUri(): string
+  {
+    $uriFragments = explode('?', $_SERVER['REQUEST_URI']);
+    return rtrim($uriFragments[0], '/');
+  }
 }
