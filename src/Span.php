@@ -44,6 +44,24 @@ class Span
     }
   }
 
+  /**
+   * Returns a string that can be used for the `sentry-trace` header and meta tag.
+   * @return string
+   */
+  public function getTraceId(): string
+  {
+    return (string) $this->span->toTraceparent();
+  }
+
+  /**
+   * Returns a string that can be used for the `baggage` header and meta tag.
+   * @return string
+   */
+  public function getBaggage(): string
+  {
+    return $this->span->toBaggage();
+  }
+
   public function end(): void
   {
     if (!$this->parent) {

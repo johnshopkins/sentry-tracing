@@ -26,18 +26,39 @@ class Transaction
     \Sentry\SentrySdk::getCurrentHub()->setSpan($this->transaction);
   }
 
-  public function end(): void
+  public function end(): ?\Sentry\EventId
   {
-    $this->transaction->finish();
+    return $this->transaction->finish();
+  }
+
+  /**
+   * Returns a string that can be used for the `sentry-trace` header and meta tag.
+   * @return string
+   */
+  public function getTraceId(): string
+  {
+    return (string) $this->transaction->toTraceparent();
+  }
+
+  /**
+   * Returns a string that can be used for the `baggage` header and meta tag.
+   * @return string
+   */
+  public function getBaggage(): string
+  {
+    return $this->transaction->toBaggage();
   }
 
   /**
    * Gets the URI of the current request
+   * @param $trimTrailingSlash
    * @return string
    */
-  public static function getUri(): string
+  public static function getUri($trimTrailingSlash = false): string
   {
     $uriFragments = explode('?', $_SERVER['REQUEST_URI']);
-    return rtrim($uriFragments[0], '/');
+    return $trimTrailingSlash ?
+      rtrim($uriFragments[0], '/') :
+      $uriFragments[0];
   }
 }
