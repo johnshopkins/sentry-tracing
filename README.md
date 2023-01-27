@@ -1,4 +1,4 @@
-# sentry-transactions
+# Sentry Transactions
 
 A wrapper library for implementing [custom instrumentation](https://docs.sentry.io/platforms/php/performance/instrumentation/custom-instrumentation/) of [Sentry performance monitoring](https://docs.sentry.io/product/performance/).
 
