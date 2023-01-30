@@ -5,6 +5,11 @@ namespace SentryTracing;
 class Span
 {
   /**
+   * @var bool
+   */
+  protected $tracingEnabled;
+
+  /**
    * @var \Sentry\Tracing\Span|null
    */
   protected $parent;
@@ -26,6 +31,12 @@ class Span
    */
   public function __construct(string $operation, string|null $description = null)
   {
+    $this->tracingEnabled = defined('SENTRY_TRACE') ? SENTRY_TRACE : true;
+
+    if (!$this->tracingEnabled) {
+      return;
+    }
+
     $this->parent = \Sentry\SentrySdk::getCurrentHub()->getSpan();
 
     if ($this->parent) {
@@ -50,6 +61,10 @@ class Span
    */
   public function getTraceId(): string
   {
+    if (!$this->tracingEnabled) {
+      return '';
+    }
+
     return (string) $this->span->toTraceparent();
   }
 
@@ -59,12 +74,16 @@ class Span
    */
   public function getBaggage(): string
   {
+    if (!$this->tracingEnabled) {
+      return '';
+    }
+
     return $this->span->toBaggage();
   }
 
   public function end(): void
   {
-    if (!$this->parent) {
+    if (!$this->tracingEnabled || !$this->parent) {
       return;
     }
 

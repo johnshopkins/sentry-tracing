@@ -5,6 +5,11 @@ namespace SentryTracing;
 class Transaction
 {
   /**
+   * @var bool
+   */
+  protected $tracingEnabled;
+
+  /**
    * @var \SentryTracing\Transaction
    */
   protected $transaction;
@@ -16,6 +21,12 @@ class Transaction
    */
   public function __construct(string $name, string $operation)
   {
+    $this->tracingEnabled = defined('SENTRY_TRACE') ? SENTRY_TRACE : true;
+
+    if (!$this->tracingEnabled) {
+      return;
+    }
+
     $transactionContext = new \Sentry\Tracing\TransactionContext();
     $transactionContext->setName( $name);
     $transactionContext->setOp($operation);
@@ -37,6 +48,10 @@ class Transaction
    */
   public function getTraceId(): string
   {
+    if (!$this->tracingEnabled) {
+      return '';
+    }
+
     return (string) $this->transaction->toTraceparent();
   }
 
@@ -46,6 +61,10 @@ class Transaction
    */
   public function getBaggage(): string
   {
+    if (!$this->tracingEnabled) {
+      return '';
+    }
+    
     return $this->transaction->toBaggage();
   }
 

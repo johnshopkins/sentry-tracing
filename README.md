@@ -32,6 +32,12 @@ $span->end();
 // end the transaction and send to sentry
 $transaction->end();
 ```
+### Using the `SENTRY_TRACE` constant
+To easily enable or disable tracing, define the `SENTRY_TRACE` before creating any transactions or spans. If the constant is not defined, it will default to `true`. The advantage of using this constant is that if at any point, you wish to turn off tracing, you can toggle the constant instead of removing all references to transactions and spans within your code base.
+```php
+// enable tracing
+const SENTRY_TRACE = true;
+```
 
 ## Connecting services
 
