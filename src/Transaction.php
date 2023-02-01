@@ -29,7 +29,7 @@ class Transaction
       return;
     }
 
-    $transactionContext = new \Sentry\Tracing\TransactionContext();
+    $transactionContext = $this->createTransactionContext();
     $transactionContext->setName( $name);
     $transactionContext->setOp($operation);
 
@@ -37,6 +37,24 @@ class Transaction
 
     // set the current transaction as the current span so we can retrieve it later
     \Sentry\SentrySdk::getCurrentHub()->setSpan($this->transaction);
+  }
+
+  /**
+   * Create transaction context, using `sentry-trace` and
+   * `baggage` headers, if present.
+   * @return \Sentry\Tracing\TransactionContext
+   */
+  protected function createTransactionContext()
+  {
+    $headers = getallheaders();
+    if (isset($headers['baggage']) && isset($headers['sentry-trace'])) {
+      return \Sentry\Tracing\TransactionContext::fromHeaders(
+        $headers['sentry-trace'],
+        $headers['baggage']
+      );
+    }
+
+    return new \Sentry\Tracing\TransactionContext();
   }
 
   public function cancel(): void
