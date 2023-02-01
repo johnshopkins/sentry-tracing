@@ -14,6 +14,8 @@ class Transaction
    */
   protected $transaction;
 
+  protected $canceled = false;
+
   /**
    * Create a Sentry transaction
    * @param string $name      Transaction name
@@ -37,8 +39,22 @@ class Transaction
     \Sentry\SentrySdk::getCurrentHub()->setSpan($this->transaction);
   }
 
-  public function end(): ?\Sentry\EventId
+  public function cancel(): void
   {
+    $this->canceled = true;
+  }
+
+  /**
+   * Send the transaction to Sentry
+   * @return \Sentry\EventId|null
+   */
+  public function end(): \Sentry\EventId|null
+  {
+    if ($this->canceled) {
+      // dont' send this transaction to sentry
+      return null;
+    }
+
     return $this->transaction->finish();
   }
 
@@ -64,7 +80,7 @@ class Transaction
     if (!$this->tracingEnabled) {
       return '';
     }
-    
+
     return $this->transaction->toBaggage();
   }
 
