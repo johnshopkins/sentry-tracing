@@ -68,7 +68,7 @@ class Transaction
    */
   public function end(): \Sentry\EventId|null
   {
-    if ($this->canceled) {
+    if (!$this->tracingEnabled || $this->canceled) {
       // dont' send this transaction to sentry
       return null;
     }
